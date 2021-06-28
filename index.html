@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <title>GSV Calculator</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <style>
+            
+            table {
+                border-collapse: unset;
+            }
+
+            table tbody {
+                border-top: 5vh solid white;
+            }
+
+            td {
+                border-left: 3vh solid white;
+            }
+
+            th {
+                text-align: left;
+            }
+
+        </style>
+        <script type="application/javascript">
+            const HALF_PI = Math.PI / 2;
+            const gsv = (CCf, CCe) => CCe / CCf;
+            const CCx = (Rb, Lc) => Math.atan(Lc / Rb) / HALF_PI;
+            const Lc = (CCx, Rb) => Rb * Math.tan(HALF_PI * CCx);
+            const validate = (n) => parseFloat(n) || false;
+
+            let iLCf, iRBf, iLCe, iRBe, oCCf, oCCe, ogsv; 
+
+            const assign_io = () => {
+                iLCf = document.getElementById("LCf");
+                iRBf = document.getElementById("RBf");
+                iLCe = document.getElementById("LCe");
+                iRBe = document.getElementById("RBe");
+                oCCf = document.getElementById("CCf");
+                oCCe = document.getElementById("CCe");
+                ogsv = document.getElementById("gsv");
+            }
+
+            const output = (CCf, CCe, gsv) => {
+                oCCf.value = CCf;
+                oCCe.value = CCe;
+                ogsv.value = gsv;
+            }
+
+            const calculate = (LCf, RBf, LCe, RBe) => {
+                const ccf = CCx(RBf, LCf);
+                const cce = CCx(RBe, LCe);
+                output(ccf, cce, gsv(ccf, cce));
+            }
+
+        </script>
+    </head>
+    <body onload="assign_io()">
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Flaccid:</th>
+                    </tr>
+                    <tr>
+                        <td><label for="LC">Lc:</label></td>
+                        <td><input name="LCf" type="text" id="LCf"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="RBf">Rb:</label></td>
+                        <td><input name="RBf" type="text" id="RBf"></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th>Erect:</th>
+                    </tr>
+                    <tr>
+                        <td><label for="LCe">Lc:</label></td>
+                        <td><input name="LCe" type="text" id="LCe"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="RBe">Rb:</label></td>
+                        <td><input name="RBe" type="text" id="RBe"></td>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th><br /><button onclick="calculate(iLCf.value, iRBf.value, iLCe.value, iRBe.value)">Calculate</button></th>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <br /><br />
+        <div>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Results:</th>
+                    </tr>
+                    <tr>
+                        <td><label for="CCf">CCf:</label></td>
+                        <td><input readonly="true" name="CCf" type="text" id="CCf"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="CCe">CCe:</label></td>
+                        <td><input readonly="true" name="CCe" type="text" id="CCe"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="gsv">gsv:</label></td>
+                        <td><input readonly="true" name="gsv" type="text" id="gsv"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </body>
+</html>
