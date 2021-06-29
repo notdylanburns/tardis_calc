@@ -2,20 +2,27 @@
 <html>
     <head>
         <meta charset='utf-8'>
-        <title>GSV Calculator</title>
+        <title>Tardis Calculator</title>
         <meta name='viewport' content='width=device-width, initial-scale=1'>
         <style>
             
+            .container {
+                height: 100%;
+                float: left;
+                margin-top: 3vh;
+                margin-right: 3vw;
+            }
+
             table {
                 border-collapse: unset;
             }
 
             table tbody {
-                border-top: 5vh solid white;
+                border-top: 5vw solid white;
             }
 
             td {
-                border-left: 3vh solid white;
+                border-left: 3vw solid white;
             }
 
             th {
@@ -24,95 +31,92 @@
 
         </style>
         <script type="application/javascript">
-            const HALF_PI = Math.PI / 2;
-            const gsv = (CCf, CCe) => CCe / CCf;
-            const CCx = (Rb, Lc) => Math.atan(Lc / Rb) / HALF_PI;
-            const Lc = (CCx, Rb) => Rb * Math.tan(HALF_PI * CCx);
-            const validate = (n) => parseFloat(n) || false;
 
-            let iLCf, iRBf, iLCe, iRBe, oCCf, oCCe, ogsv; 
+            let iw, ih, iW, oL, os, oa, ob; 
+
+            const sqrt = Math.sqrt;
+            const deg = x => x * 180 / Math.PI;
+            const corner_length = (w, h, W) => (sqrt((W - w)**2 + h**2));
+            const middle_length = (w, h, W) => (sqrt((sqrt(W**2 - (W / 2)**2) - sqrt(w**2 - (w / 2)**2))**2 + h**2));
+            const panel_slope   = (w, h, W) => deg(Math.atan(h / (sqrt(W**2 - (W / 2)**2) - sqrt(w**2 - (w / 2)**2))));
+            const trapez_angle  = (L, s) => deg(Math.asin(s / L));
 
             const assign_io = () => {
-                iLCf = document.getElementById("LCf");
-                iRBf = document.getElementById("RBf");
-                iLCe = document.getElementById("LCe");
-                iRBe = document.getElementById("RBe");
-                oCCf = document.getElementById("CCf");
-                oCCe = document.getElementById("CCe");
-                ogsv = document.getElementById("gsv");
+                iw = document.getElementById("w");
+                ih = document.getElementById("h");
+                iW = document.getElementById("W");
+                oL = document.getElementById("L");
+                os = document.getElementById("s");
+                oa = document.getElementById("a");
+                ob = document.getElementById("b");
             }
 
-            const output = (CCf, CCe, gsv) => {
-                oCCf.value = CCf;
-                oCCe.value = CCe;
-                ogsv.value = gsv;
+            const output = (L, s, a, b) => {
+                oL.value = L;
+                os.value = s;
+                oa.value = a;
+                ob.value = b;
             }
 
-            const calculate = (LCf, RBf, LCe, RBe) => {
-                const ccf = CCx(RBf, LCf);
-                const cce = CCx(RBe, LCe);
-                output(ccf, cce, gsv(ccf, cce));
+            const calculate = (w, h, W) => {
+                const cl = corner_length(w, h, W);
+                const ml = middle_length(w, h, W);
+                const ps = panel_slope(w, h, W);
+                output(cl, ml, ps, trapez_angle(cl, ml));
             }
 
         </script>
     </head>
     <body onload="assign_io()">
-        <div>
+        <div class="container">
             <table>
                 <tbody>
                     <tr>
-                        <th>Flaccid:</th>
+                        <th>Input:</th>
                     </tr>
                     <tr>
-                        <td><label for="LC">Lc:</label></td>
-                        <td><input name="LCf" type="text" id="LCf"></td>
+                        <td><label for="w">Panel Top Width, w</label></td>
+                        <td><input name="w" type="text" id="w"></td>
                     </tr>
                     <tr>
-                        <td><label for="RBf">Rb:</label></td>
-                        <td><input name="RBf" type="text" id="RBf"></td>
-                    </tr>
-                </tbody>
-                <tbody>
-                    <tr>
-                        <th>Erect:</th>
+                        <td><label for="h">Panel Height, h</label></td>
+                        <td><input name="h" type="text" id="h"></td>
                     </tr>
                     <tr>
-                        <td><label for="LCe">Lc:</label></td>
-                        <td><input name="LCe" type="text" id="LCe"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="RBe">Rb:</label></td>
-                        <td><input name="RBe" type="text" id="RBe"></td>
+                        <td><label for="W">Panel Bottom Width, W</label></td>
+                        <td><input name="W" type="text" id="W"></td>
                     </tr>
                 </tbody>
                 <tbody>
                     <tr>
-                        <th><br /><button onclick="calculate(iLCf.value, iRBf.value, iLCe.value, iRBe.value)">Calculate</button></th>
+                        <th><br /><button onclick="calculate(iw.value, ih.value, iW.value)">Calculate</button></th>
+                    </tr>
+                </tbody>
+                <tbody>
+                    <tr>
+                        <th><br /><br />Output:</th>
+                    </tr>
+                    <tr>
+                        <td><label for="L">Corner Length, L</label></td>
+                        <td><input readonly="true" name="L" type="text" id="L"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="s">Middle Length, s</label></td>
+                        <td><input readonly="true" name="s" type="text" id="s"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="a">Panel Slope, a°</label></td>
+                        <td><input readonly="true" name="a" type="text" id="a"></td>
+                    </tr>
+                    <tr>
+                        <td><label for="b">Trapezium Angle, b°</label></td>
+                        <td><input readonly="true" name="b" type="text" id="b"></td>
                     </tr>
                 </tbody>
             </table>
         </div>
-        <br /><br />
-        <div>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Results:</th>
-                    </tr>
-                    <tr>
-                        <td><label for="CCf">CCf:</label></td>
-                        <td><input readonly="true" name="CCf" type="text" id="CCf"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="CCe">CCe:</label></td>
-                        <td><input readonly="true" name="CCe" type="text" id="CCe"></td>
-                    </tr>
-                    <tr>
-                        <td><label for="gsv">gsv:</label></td>
-                        <td><input readonly="true" name="gsv" type="text" id="gsv"></td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="container">
+            <img src="/static/img">
         </div>
     </body>
 </html>
